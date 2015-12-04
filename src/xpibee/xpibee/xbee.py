@@ -31,16 +31,15 @@ def create_frame(address, data):
     arr.append(frameDelimiter)
     arr = arr[::-1]
     arr.append(str(checksum).replace('0x', ''))
-    print(arr)
     cmd = ''.join(b for b in arr)
 
     return cmd
 
 
-def send(address, data):
+def send_transmit_request(address, data, port='/dev/ttyUSB0', baudrate=9600, timeout=3.0):
     frame = create_frame(address, data)
-    print bytearray.fromhex(frame)
-    ser = serial.Serial('/dev/ttyUSB0', baudrate=9600, timeout=3.0)
-    #ser = serial.Serial('/dev/tty.usbserial-DA00T246', baudrate=9600, timeout=3.0)
+    ba = bytearray.fromhex(frame)
+    ser = serial.Serial(port, baudrate=baudrate, timeout=timeout)
     fcntl.flock(ser.fileno(), fcntl.LOCK_EX)
-    ser.write(bytearray.fromhex(frame))
+    ser.write(ba)
+    return ba, frame

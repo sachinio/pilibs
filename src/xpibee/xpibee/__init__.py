@@ -1,1 +1,1 @@
-from .xbee import send
+from .xbee import send_transmit_request
